@@ -6,17 +6,15 @@ enum PhotoOrientation {
   Panorama,
 }
 
-class Picture {
+//SUPERCLASS
+abstract class Item {
   #id: number
   #title: string
-  #orientation: PhotoOrientation
 
-  constructor(id: number, title: string, orientation: PhotoOrientation) {
+  constructor(id: number, title: string) {
     this.#id = id
     this.#title = title
-    this.#orientation = orientation
   }
-
   get id() {
     return this.#id
   }
@@ -26,6 +24,17 @@ class Picture {
   set title(title: string) {
     this.#title = title
   }
+}
+
+class Picture extends Item {
+  #orientation: PhotoOrientation
+  static photoOrientation = PhotoOrientation
+
+  constructor(id: number, title: string, orientation: PhotoOrientation) {
+    super(id, title)
+    this.#orientation = orientation
+  }
+
   get orientation() {
     return this.#orientation
   }
@@ -34,27 +43,18 @@ class Picture {
   }
 
   public toString() {
-    return `title: ${this.title}, orientation: ${this.orientation}`
+    return `id: ${this.id}, title: ${this.title}, orientation: ${this.orientation}`
   }
 }
 
-class Album {
-  #id: number
-  #title: string
+class Album extends Item {
   #pictures: Picture[]
 
   constructor(id: number, title: string) {
-    this.#id = id
-    this.#title = title
+    super(id, title)
     this.#pictures = []
   }
 
-  get id() {
-    return this.#id
-  }
-  get title() {
-    return this.#title
-  }
   public addPicture(picture: Picture) {
     this.#pictures.push(picture)
   }
@@ -63,10 +63,17 @@ class Album {
 const album = new Album(1, "My Family")
 
 const picture = new Picture(2, "My Cousin", PhotoOrientation.Landscape)
-
 album.addPicture(picture)
 
 console.log(picture)
 console.log(picture.title, picture.orientation)
 picture.title = "My Grandma"
 console.log(picture.title, picture.orientation)
+console.log(picture.toString())
+
+const albumId = album.id
+const pictureId = picture.id
+
+// const item = new Item(1, "hola") // No se puede porque es una clase abstracta
+
+console.log(Picture.photoOrientation.Panorama)

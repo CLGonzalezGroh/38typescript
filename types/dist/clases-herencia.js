@@ -10,7 +10,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Picture_id, _Picture_title, _Picture_orientation, _Album_id, _Album_title, _Album_pictures;
+var _Item_id, _Item_title, _Picture_orientation, _Album_pictures;
 Object.defineProperty(exports, "__esModule", { value: true });
 var PhotoOrientation;
 (function (PhotoOrientation) {
@@ -19,23 +19,30 @@ var PhotoOrientation;
     PhotoOrientation[PhotoOrientation["Square"] = 2] = "Square";
     PhotoOrientation[PhotoOrientation["Panorama"] = 3] = "Panorama";
 })(PhotoOrientation || (PhotoOrientation = {}));
-class Picture {
-    constructor(id, title, orientation) {
-        _Picture_id.set(this, void 0);
-        _Picture_title.set(this, void 0);
-        _Picture_orientation.set(this, void 0);
-        __classPrivateFieldSet(this, _Picture_id, id, "f");
-        __classPrivateFieldSet(this, _Picture_title, title, "f");
-        __classPrivateFieldSet(this, _Picture_orientation, orientation, "f");
+//SUPERCLASS
+class Item {
+    constructor(id, title) {
+        _Item_id.set(this, void 0);
+        _Item_title.set(this, void 0);
+        __classPrivateFieldSet(this, _Item_id, id, "f");
+        __classPrivateFieldSet(this, _Item_title, title, "f");
     }
     get id() {
-        return __classPrivateFieldGet(this, _Picture_id, "f");
+        return __classPrivateFieldGet(this, _Item_id, "f");
     }
     get title() {
-        return __classPrivateFieldGet(this, _Picture_title, "f");
+        return __classPrivateFieldGet(this, _Item_title, "f");
     }
     set title(title) {
-        __classPrivateFieldSet(this, _Picture_title, title, "f");
+        __classPrivateFieldSet(this, _Item_title, title, "f");
+    }
+}
+_Item_id = new WeakMap(), _Item_title = new WeakMap();
+class Picture extends Item {
+    constructor(id, title, orientation) {
+        super(id, title);
+        _Picture_orientation.set(this, void 0);
+        __classPrivateFieldSet(this, _Picture_orientation, orientation, "f");
     }
     get orientation() {
         return __classPrivateFieldGet(this, _Picture_orientation, "f");
@@ -44,30 +51,22 @@ class Picture {
         __classPrivateFieldSet(this, _Picture_orientation, orientation, "f");
     }
     toString() {
-        return `title: ${this.title}, orientation: ${this.orientation}`;
+        return `id: ${this.id}, title: ${this.title}, orientation: ${this.orientation}`;
     }
 }
-_Picture_id = new WeakMap(), _Picture_title = new WeakMap(), _Picture_orientation = new WeakMap();
-class Album {
+_Picture_orientation = new WeakMap();
+Picture.photoOrientation = PhotoOrientation;
+class Album extends Item {
     constructor(id, title) {
-        _Album_id.set(this, void 0);
-        _Album_title.set(this, void 0);
+        super(id, title);
         _Album_pictures.set(this, void 0);
-        __classPrivateFieldSet(this, _Album_id, id, "f");
-        __classPrivateFieldSet(this, _Album_title, title, "f");
         __classPrivateFieldSet(this, _Album_pictures, [], "f");
-    }
-    get id() {
-        return __classPrivateFieldGet(this, _Album_id, "f");
-    }
-    get title() {
-        return __classPrivateFieldGet(this, _Album_title, "f");
     }
     addPicture(picture) {
         __classPrivateFieldGet(this, _Album_pictures, "f").push(picture);
     }
 }
-_Album_id = new WeakMap(), _Album_title = new WeakMap(), _Album_pictures = new WeakMap();
+_Album_pictures = new WeakMap();
 const album = new Album(1, "My Family");
 const picture = new Picture(2, "My Cousin", PhotoOrientation.Landscape);
 album.addPicture(picture);
@@ -75,3 +74,8 @@ console.log(picture);
 console.log(picture.title, picture.orientation);
 picture.title = "My Grandma";
 console.log(picture.title, picture.orientation);
+console.log(picture.toString());
+const albumId = album.id;
+const pictureId = picture.id;
+// const item = new Item(1, "hola") // No se puede porque es una clase abstracta
+console.log(Picture.photoOrientation.Panorama);
